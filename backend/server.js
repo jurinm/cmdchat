@@ -26,8 +26,18 @@ async function getAllMessages () {
 }
 }
 
+let allUsers = [];
+
 io.on("connection", async (socket) => {
   let allMessages;
+  
+  
+  socket.on('connected', (data) => {
+    console.log(data)
+    allUsers.push(data)
+    console.log(allUsers)
+    socket.emit('user joined', allUsers)
+  })
   console.log(socket.id, 'connected')
   allMessages = await getAllMessages();
   socket.emit('init', allMessages)
