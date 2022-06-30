@@ -1,0 +1,13 @@
+.chat {
+    display: flex;
+    justify-content: left;
+    align-items: flex-start;
+    overflow-y: auto;
+    max-height: 80vh;
+    flex-direction: column;
+    padding: 2rem;
+}
+
+.messageYour {
+    align-self: flex-end;
+}
