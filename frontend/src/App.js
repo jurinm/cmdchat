@@ -13,11 +13,11 @@ function App() {
   const { userData, setUserData } = useContext(AuthContext);
 
   const sendMessage = (message) => {
-    socket.emit("sendMessage", { nickname: userData.name, message: message });
+    socket.emit("sendMessage", { nickname: userData.name, message: message, userColor: userData.color });
   };
 
   const connected = () => {
-    socket.emit("connected", userData.name);
+    socket.emit("connected", {name: userData.name, color: userData.color, id: socket.id});
   };
 
   useEffect(() => {
@@ -32,13 +32,17 @@ function App() {
     setMessages((newMessages) => (newMessages = data))
   );
 
+  socket.on('user left', (data) => {setUsersOnline(newUsers => newUsers = data)
+    console.log(`user left ${data}`)})
+
   socket.on(
     "messageAdded",
-    (data) => setMessages((newMessage) => (newMessage = messages.concat(data))),
-    console.log(`From effect ${messages}`)
+    (data) => {setMessages((newMessage) => (newMessage = messages.concat(data)))
+    console.log(`From effect ${messages}`)}
   );
 
-  socket.on('user joined', (data) => setUsersOnline(newUsers => newUsers = data))
+  socket.on('user joined', (data) => {setUsersOnline(newUsers => newUsers = data)
+    console.log(`user joined ${data}`)})
 
   return (
     <div className="App">
@@ -48,6 +52,8 @@ function App() {
           messages={messages}
           username={userData.name}
           users = {usersOnline}
+          color = {usersOnline.color}
+          yourColor = {userData.color}
         />
       ) : (
         <Wellcome />

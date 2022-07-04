@@ -1,4 +1,4 @@
-const mongo = require('./dbConnection')
+const mongo = require("./dbConnection");
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
@@ -16,42 +16,49 @@ const io = new Server(server, {
 
 const PORT = 3050 || process.env.PORT;
 
-const db = mongo.Connect()
-async function getAllMessages () {
+const db = mongo.Connect();
+async function getAllMessages() {
   try {
-    return db.find().toArray();   
-
-} catch (error) {
+    return db.find().toArray();
+  } catch (error) {
     console.log(e);
-}
+  }
 }
 
 let allUsers = [];
 
 io.on("connection", async (socket) => {
   let allMessages;
-  
-  
-  socket.on('connected', (data) => {
-    console.log(data)
-    allUsers.push(data)
-    console.log(allUsers)
-    socket.emit('user joined', allUsers)
-  })
-  console.log(socket.id, 'connected')
+
+  socket.on("connected", ({...data}) => {
+    console.log(data);
+    allUsers.push({ username: data.name, color: data.color, id: data.id });
+    console.log(allUsers);
+    io.emit("user joined", allUsers);
+  });
+  console.log(socket.id, "connected");
   allMessages = await getAllMessages();
-  socket.emit('init', allMessages)
+  socket.emit("init", allMessages);
   socket.on("sendMessage", (message) => {
-    console.log(message)
+    console.log(message);
     const messageBody = {
-        nickname: message.nickname,
-        message: message.message,
-        messageTime: Date.now(),
+      nickname: message.nickname,
+      message: message.message,
+      messageTime: Date.now(),
+      userColor: message.userColor,
     };
-    console.log(messageBody)
-    db.insertOne(messageBody)
-    console.log(socket.id, 'message sended')
-    io.emit('messageAdded', messageBody)
+    console.log(messageBody);
+    db.insertOne(messageBody);
+    console.log(socket.id, "message sended");
+    io.emit("messageAdded", messageBody);
+  });
+  socket.on("disconnect", () => {
+    allUsers.map((user, index) => {
+      if (user.id === socket.id) {
+        allUsers.splice(index, 1);
+        io.emit("user left", allUsers);
+      }
+    });
   });
 });
 

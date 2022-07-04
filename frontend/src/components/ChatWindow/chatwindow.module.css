@@ -9,10 +9,24 @@
     justify-content: left;
     align-items: flex-start;
     overflow-y: auto;
+    
     max-height: 80vh;
     flex-direction: column;
     padding: 2rem;
     width: 100%;
+}
+
+.chat__messages::-webkit-scrollbar {
+    display: none; /* for Chrome, Safari and Opera */
+}
+
+.chat__messages{
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.chat__messages > * {
+    margin: 0.6rem 0;
 }
 
 .users {
@@ -23,6 +37,41 @@
     min-width: 350px;
     overflow-y: auto;
     text-align: left;
+    max-height: 80vh;
+}
+
+.input p {
+    width: max-content;
+}
+
+.username {
+    
+}
+
+.input {
+    position: fixed;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    width: 100%;
+    left: 1rem;
+    bottom: 0;
+}
+
+.input * {
+    font-size: 1rem;
+    vertical-align: middle;
+}
+
+.input > input {
+    background-color: transparent;
+    outline: none;
+    border: none;
+    color: var(--color-green);
+    margin-left: 0.3rem;
+
+    font-family: var(--font-main);
+    flex-grow: 1;
 }
 
 .messageYour {

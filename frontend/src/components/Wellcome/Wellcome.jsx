@@ -3,9 +3,10 @@ import { AuthContext } from '../../store/nicknameStore'
 const Wellcome = () => {
   const {userData, setUserData} = useContext(AuthContext)
   const [name, setName] = useState('')
+  const color = Array.from({length: 3}, _ => Math.floor(Math.random()*256))
 
   const inputHandler = () => {
-    setUserData({...userData, 'name': name})
+    setUserData({...userData, 'name': name, 'color': `rgb(${color})`})
   };
 
   return (
